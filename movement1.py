@@ -1,8 +1,8 @@
 import pygame
 
-
 pygame.init()
 
+# ------ window and level creation ------
 
 WIDTH = 800
 HEIGHT = 600
@@ -15,14 +15,17 @@ platforms = [
     pygame.Rect(100, 180, 200, 20)
 ]
 
+# ------ several variables needed for mechanics ------
 
 clock = pygame.time.Clock()
-
 running = True
 
+#positioning
 pos_x = 100
 ground_y = 300
 pos_y = ground_y
+
+#general movement
 velocity = 0
 vertical = 0
 gravity = 0.92
@@ -32,6 +35,7 @@ acceleration = 0.85
 max_speed = 5
 friction = 0.82
 
+#dash mechanics
 can_dash = True
 last_dash = 0
 dash_time_window = 250
@@ -42,6 +46,7 @@ dash_multiplier = 7
 
 current_max_speed = max_speed
 
+# ------------ main loop ------------
 
 while running:
     for event in pygame.event.get():
@@ -49,15 +54,21 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-        old_y = pos_y
+        old_y = pos_y 
+
+# ------ controller. actions after buttonpress ------
 
         if event.type == pygame.KEYDOWN:
+
+# ------ jump mechanics ------
 
             if event.key in (pygame.K_UP, pygame.K_w, pygame.K_SPACE):
                 current_time = pygame.time.get_ticks()
                 if on_ground or current_time - last_dash <= 250:
                     vertical = -jump_height
-                
+
+# ------ dash mechanics ------
+
             if event.key in (pygame.K_RIGHT, pygame.K_d):
                 current_time = pygame.time.get_ticks()
 
@@ -88,7 +99,7 @@ while running:
 
                 last_left_press = current_time    
 
-
+# ------ general movement mechanics ------
 
     keys = pygame.key.get_pressed() 
     if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
@@ -105,6 +116,8 @@ while running:
     pos_x += velocity
     velocity *= friction
 
+# ------ 'jump cut' to enable variable jump height ------
+
     if vertical < 0:
         if not (keys[pygame.K_UP] or keys[pygame.K_w] or keys[pygame.K_SPACE]):
             vertical += gravity + jump_cut_multiplier
@@ -117,6 +130,9 @@ while running:
     pos_y += vertical
 
     on_ground = False
+
+# ------ collision and positioning mechanics ------
+
     player_rect = pygame.Rect(int(pos_x), int(pos_y), block.width, block.height)
 
     if pos_y >= ground_y:
@@ -141,6 +157,8 @@ while running:
     block.y = int(pos_y)
     
     clock.tick(60)
+
+# ------ graphics ------
 
     screen.fill((0, 0, 0))
 
