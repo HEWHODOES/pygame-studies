@@ -9,6 +9,11 @@ HEIGHT = 600
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 block = pygame.Rect(100, 300, 50, 100)
+platforms = [
+    pygame.Rect(200, 380, 200, 20),
+    pygame.Rect(500, 280, 180, 20),
+    pygame.Rect(100, 180, 200, 20)
+]
 
 
 clock = pygame.time.Clock()
@@ -20,10 +25,11 @@ ground_y = 300
 pos_y = ground_y
 velocity = 0
 vertical = 0
-gravity = 0.35
-jump_height = 11
-acceleration = 0.65
-max_speed = 3
+gravity = 0.92
+jump_height = 21
+jump_cut_multiplier = 2.2
+acceleration = 0.85
+max_speed = 5
 friction = 0.82
 
 can_dash = True
@@ -43,10 +49,13 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+        old_y = pos_y
+
         if event.type == pygame.KEYDOWN:
 
-            if event.key in (pygame.K_UP, pygame.K_w):
-                if pos_y >= ground_y:
+            if event.key in (pygame.K_UP, pygame.K_w, pygame.K_SPACE):
+                current_time = pygame.time.get_ticks()
+                if on_ground or current_time - last_dash <= 250:
                     vertical = -jump_height
                 
             if event.key in (pygame.K_RIGHT, pygame.K_d):
@@ -96,12 +105,37 @@ while running:
     pos_x += velocity
     velocity *= friction
 
-    vertical += gravity
+    if vertical < 0:
+        if not (keys[pygame.K_UP] or keys[pygame.K_w] or keys[pygame.K_SPACE]):
+            vertical += gravity + jump_cut_multiplier
+        else:
+            vertical += gravity
+
+    else:
+        vertical += gravity            
+
     pos_y += vertical
+
+    on_ground = False
+    player_rect = pygame.Rect(int(pos_x), int(pos_y), block.width, block.height)
 
     if pos_y >= ground_y:
         pos_y = ground_y
+        on_ground = True
         vertical = 0
+
+    for plat in platforms:
+        old_bottom = old_y + block.height
+
+        if player_rect.colliderect(plat) and vertical >= 0:
+
+            if old_bottom <= (plat.top + 1):
+
+                on_ground = True
+                pos_y = plat.top - (block.height - 1)
+                vertical = 0
+                
+                break    
 
     block.x = int(pos_x)
     block.y = int(pos_y)
@@ -125,6 +159,10 @@ while running:
     ) 
         
     pygame.draw.rect(screen, shadow_color, shadow_rect)
+
+    for plat in platforms:
+        pygame.draw.rect(screen, (80, 140, 255), plat)
+
     pygame.draw.rect(screen, (255, 255, 255), block)
     
     pygame.display.update()
