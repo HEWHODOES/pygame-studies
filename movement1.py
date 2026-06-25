@@ -1,6 +1,9 @@
 import pygame
 
 pygame.init()
+player_image = pygame.image.load("alien.svg")
+player_image = pygame.transform.scale(player_image, (40, 60))
+
 
 # ------ window and level creation ------
 
@@ -8,12 +11,16 @@ WIDTH = 800
 HEIGHT = 600
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-block = pygame.Rect(100, 300, 50, 100)
+
+block = pygame.Rect(100, 300, 40, 60)
+
 platforms = [
-    pygame.Rect(200, 380, 200, 20),
-    pygame.Rect(500, 280, 180, 20),
-    pygame.Rect(100, 180, 200, 20)
+    pygame.Rect(200, 330, 200, 20),
+    pygame.Rect(800, 280, 180, 20),
+    pygame.Rect(1200, 180, 200, 20)
 ]
+
+LEVEL_WIDTH = 2500
 
 # ------ several variables needed for mechanics ------
 
@@ -22,8 +29,10 @@ running = True
 
 #positioning
 pos_x = 100
-ground_y = 300
+ground_y = 348
 pos_y = ground_y
+
+camera_x = 0
 
 #general movement
 velocity = 0
@@ -46,15 +55,20 @@ dash_multiplier = 7
 
 current_max_speed = max_speed
 
+
+
 # ------------ main loop ------------
 
 while running:
+
+    old_y = pos_y 
+
     for event in pygame.event.get():
         
         if event.type == pygame.QUIT:
             running = False
 
-        old_y = pos_y 
+        
 
 # ------ controller. actions after buttonpress ------
 
@@ -141,6 +155,7 @@ while running:
         vertical = 0
 
     for plat in platforms:
+
         old_bottom = old_y + block.height
 
         if player_rect.colliderect(plat) and vertical >= 0:
@@ -155,14 +170,29 @@ while running:
 
     block.x = int(pos_x)
     block.y = int(pos_y)
-    
+
+# ------- CAMERA -------
+
+    camera_x = pos_x - WIDTH // 2
+
+    if camera_x < 0:
+        camera_x = 0
+
+    if camera_x > LEVEL_WIDTH - WIDTH:
+        camera_x = LEVEL_WIDTH - WIDTH    
+
+
+#-------------
     clock.tick(60)
 
 # ------ graphics ------
 
     screen.fill((0, 0, 0))
 
-    pygame.draw.line(screen, (100, 200, 100), (0, 400), (WIDTH, 400), 8)
+    pygame.draw.line(
+        screen, (100, 200, 100),
+        (0 - camera_x, 400),
+        (LEVEL_WIDTH - camera_x, 400), 8)
 
     shadow_color = (50, 50, 50)
     shadow_y = 400 - 3
@@ -170,7 +200,7 @@ while running:
     shadow_height = 6
 
     shadow_rect = pygame.Rect(
-        block.x + 4,
+        block.x - camera_x + 4,
         shadow_y,
         shadow_width,
         shadow_height
@@ -179,10 +209,20 @@ while running:
     pygame.draw.rect(screen, shadow_color, shadow_rect)
 
     for plat in platforms:
-        pygame.draw.rect(screen, (80, 140, 255), plat)
+        
+        screen_rect = pygame.Rect(
+            plat.x - camera_x,
+            plat.y,
+            plat.width,
+            plat.height
+        )
 
-    pygame.draw.rect(screen, (255, 255, 255), block)
-    
+        pygame.draw.rect(screen, (80, 140, 255), screen_rect)
+
+    screen.blit(
+        player_image, 
+        (block.x -camera_x, block.y))
+
     pygame.display.update()
 
-    
+pygame.quit()
