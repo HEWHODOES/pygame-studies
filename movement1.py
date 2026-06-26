@@ -7,8 +7,8 @@ player_image = pygame.transform.scale(player_image, (40, 60))
 
 # ------ window and level creation ------
 
-WIDTH = 800
-HEIGHT = 600
+WIDTH = 800 #in settings
+HEIGHT = 600 #in settings
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
@@ -16,18 +16,18 @@ block = pygame.Rect(100, 300, 40, 60)
 
 platforms = [
     pygame.Rect(200, 330, 200, 20),
-    pygame.Rect(800, 280, 180, 20),
+    pygame.Rect(800, 280, 200, 20),
     pygame.Rect(1200, 180, 200, 20)
 ]
 
-LEVEL_WIDTH = 2500
+LEVEL_WIDTH = 2500 #in settings
 
 # ------ several variables needed for mechanics ------
 
 clock = pygame.time.Clock()
 running = True
 
-#positioning
+#positioning   in settings
 pos_x = 100
 ground_y = 348
 pos_y = ground_y
@@ -55,7 +55,7 @@ dash_multiplier = 7
 
 current_max_speed = max_speed
 
-
+# all in settings
 
 # ------------ main loop ------------
 
