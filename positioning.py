@@ -3,13 +3,19 @@ import settings
 
 
 
-def positioning(platforms):
+def positioning(platforms, borders): 
 
     block = pygame.Rect(100, 300, 40, 60)
     
     settings.on_ground = False
     # ------ collision and positioning mechanics ------
     player_rect = pygame.Rect(int(settings.pos_x), int(settings.pos_y), block.width, block.height)
+
+    if player_rect.x >  settings.LEVEL_WIDTH:
+        player_rect.x = settings.LEVEL_WIDTH - player_rect.width
+
+    if player_rect.x < 0:
+        player_rect.x = 0 
 
     if settings.pos_y >= settings.ground_y:
 
@@ -31,4 +37,22 @@ def positioning(platforms):
                 settings.vertical = 0
 
                 break
+
+    for border in borders:
+        keys = pygame.key.get_pressed()
+        if player_rect.colliderect(border):
+
+            if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+                
+                settings.pos_x = 0 + (player_rect.width * 2)
+                settings.velocity *= -0.25
+                
+
+            if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+                
+                settings.pos_x = settings.LEVEL_WIDTH - (player_rect.width * 2)
+                settings.velocity *= -0.25 
+
+            break
+
            

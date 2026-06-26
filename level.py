@@ -5,17 +5,7 @@ import camera
 
 def level(screen, player_image, platforms):
 
-    #screen = pygame.display.set_mode((settings.WIDTH, settings.HEIGHT))
-
     block = pygame.Rect(int(settings.pos_x), int(settings.pos_y), 40, 60)
-
-    #platforms = [
-        #pygame.Rect(200, 330, 200, 20),
-        #pygame.Rect(800, 280, 200, 20),
-        #pygame.Rect(1200, 180, 200, 20)
-    #]
-    #player_image = pygame.image.load("alien.svg")
-    #player_image = pygame.transform.scale(player_image, (40, 60))
 
     screen.fill((0, 0, 0))
 
@@ -52,3 +42,6 @@ def level(screen, player_image, platforms):
     screen.blit(
         player_image, 
         (block.x -settings.camera_x, block.y))
+    
+    
+    

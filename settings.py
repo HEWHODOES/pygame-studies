@@ -11,6 +11,7 @@ pos_x = 100
 ground_y = 348
 pos_y = ground_y
 old_y = pos_y
+old_x = pos_x
 on_ground = False
 
 camera_x = 0

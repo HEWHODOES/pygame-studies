@@ -4,6 +4,7 @@ import settings
 def controls():
 
     # ------ general movement mechanics ------
+    
 
         keys = pygame.key.get_pressed() 
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
