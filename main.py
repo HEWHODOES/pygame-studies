@@ -18,10 +18,10 @@ platforms = [
         pygame.Rect(800, 280, 200, 20),
         pygame.Rect(1200, 180, 200, 20)
         ]
-borders = [
-        pygame.Rect(0, -10, 5, 500),
-        pygame.Rect(2500, -10, 2, 500)
-        ]
+ 
+left_border = pygame.Rect(0, -10, 5, 500)
+right_border = pygame.Rect(2500, -10, 2, 500)
+        
 
 clock = pygame.time.Clock()
 running = True
@@ -37,7 +37,7 @@ while running:
     camera()
     clock.tick(60)
     controls()
-    positioning(platforms, borders)
+    positioning(platforms, right_border, left_border)
     level(screen, player_image, platforms)
     
     pygame.display.update()
